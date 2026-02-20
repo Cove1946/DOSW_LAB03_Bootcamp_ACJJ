@@ -1,7 +1,128 @@
+# DOCUMENTO DE ANÁLISIS DE REQUERIMIENTOS – RF-01
+## Bankify – Autenticación de Usuarios mediante Usuario y Contraseña
 
+---
 
+## INFORMACIÓN GENERAL
 
+| Campo | Detalle                                                                                                                                                                                                                                                                                                                            |
+|---|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Funcionalidad** | Autenticación de Usuarios                                                                                                                                                                                                                                                                                                          |
+| **Código** | RF-01                                                                                                                                                                                                                                                                                                                              |
+| **Nombre** | Autenticación mediante usuario y contraseña en la plataforma Bankify                                                                                                                                                                                                                                                               |
+| **Tipo** | Funcional                                                                                                                                                                                                                                                                                                                          |
+| **Descripción** | El sistema debe permitir la autenticación mediante usuario y contraseña para clientes, asesores, supervisores y gerente financiero. Cada rol tendrá acceso únicamente a las funcionalidades habilitadas según sus permisos dentro de la plataforma Bankify.                                                                        |
+| **Cómo se ejecutará** | El usuario ingresa a la plataforma Bankify, introduce su nombre de usuario (correo electrónico) y contraseña en el formulario de inicio de sesión y hace clic en "Iniciar sesión". El sistema valida las credenciales contra la base de datos, determina el rol del usuario y redirige a la vista correspondiente según dicho rol. |
+| **Actor principal** | Cliente, Asesor, Supervisor, Gerente Financiero                                                                                                                                                                                                                                                                                    |
+| **Precondiciones** | 1. El usuario debe estar registrado y activo en el sistema. <br>2. El usuario debe conocer sus credenciales (correo y contraseña). <br>3. La cuenta del usuario no debe estar inactiva o bloqueada. <br>4. El servicio de autenticación del sistema debe estar operativo.                                                          |
 
+---
+
+## DATOS DE ENTRADA
+
+| Nombre | Descripción | Tipo de campo | Reglas / Validación | Obligatorio |
+|---|---|---|---|---|
+| Correo electrónico | Identificador único del usuario en el sistema | Email | Formato válido (usuario@dominio.ext). Debe existir en la base de datos. | Sí |
+| Contraseña | Contraseña de acceso asociada a la cuenta | Contraseña | Mínimo 8 caracteres. Al menos 1 mayúscula, 1 número y 1 carácter especial. No se muestra en pantalla (campo enmascarado). | Sí |
+
+---
+
+## DATOS DE SALIDA
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Token de sesión | Identificador de sesión activa generado por el sistema | Alfanumérico | Generado automáticamente. Con expiración configurada (ej. 30 min inactividad). | Sí |
+| Rol del usuario | Rol asignado al usuario autenticado | Texto | Valores posibles: `CLIENTE`, `ASESOR`, `SUPERVISOR`, `GERENTE_FINANCIERO`. | Sí |
+| Redirección al dashboard | El sistema redirige al usuario al panel correspondiente a su rol | URL | Cliente → `/dashboard/cliente`. Asesor → `/dashboard/asesor`. Supervisor → `/dashboard/supervisor`. Gerente Financiero → `/dashboard/gerente`. | Sí |
+| Mensaje de bienvenida | Mensaje personalizado mostrado al iniciar sesión | Texto | Se muestra en pantalla después del inicio de sesión exitoso. | Sí |
+
+---
+
+## FLUJO BÁSICO
+
+| Paso | Actor | Descripción | Excepción |
+|---|---|---|---|
+| 1 | Usuario | Ingresa a la plataforma Bankify y navega a la pantalla de inicio de sesión. | — |
+| 2 | Usuario | Introduce su correo electrónico y contraseña en el formulario. | — |
+| 3 | Usuario | Hace clic en el botón "Iniciar sesión". | — |
+| 4 | Sistema | Valida que los campos no estén vacíos y que tengan el formato correcto. | Flujo Alterno FA-01 si los campos están vacíos o tienen formato inválido. |
+| 5 | Sistema | Verifica que el correo electrónico exista en la base de datos. | Flujo Alterno FA-02 si el usuario no existe. |
+| 6 | Sistema | Compara la contraseña ingresada (hash) con la almacenada en la base de datos. | Flujo Alterno FA-03 si la contraseña es incorrecta. |
+| 7 | Sistema | Verifica que la cuenta del usuario esté activa. | Flujo Alterno FA-04 si la cuenta está inactiva o bloqueada. |
+| 8 | Sistema | Genera un token de sesión y registra el inicio de sesión. | — |
+| 9 | Sistema | Determina el rol del usuario autenticado. | — |
+| 10 | Sistema | Redirige al usuario al dashboard correspondiente a su rol y muestra mensaje de bienvenida. | — |
+
+---
+
+## FLUJO ALTERNO (MANEJO DE ERRORES)
+
+| Código | Actor | Descripción del error | Acción del sistema |
+|---|---|---|---|
+| FA-01 | Sistema | Uno o más campos están vacíos o tienen formato inválido (ej. correo sin @). | El sistema resalta en rojo los campos con error y muestra un mensaje descriptivo. No procesa el inicio de sesión. |
+| FA-02 | Sistema | El correo electrónico ingresado no está registrado en el sistema. | Muestra mensaje genérico: *"Correo o contraseña incorrectos"* (sin revelar cuál de los dos falló, por seguridad). |
+| FA-03 | Sistema | La contraseña ingresada no coincide con la almacenada. | Muestra mensaje genérico: *"Correo o contraseña incorrectos"*. Incrementa el contador de intentos fallidos. Bloquea la cuenta tras 5 intentos consecutivos fallidos. |
+| FA-04 | Sistema | La cuenta del usuario está inactiva o bloqueada. | Muestra mensaje: *"Tu cuenta se encuentra inactiva o bloqueada. Comunícate con tu asesor o administrador."* |
+| FA-05 | Sistema | El servicio de autenticación no está disponible. | Muestra mensaje: *"El servicio no está disponible en este momento. Intenta de nuevo más tarde."* |
+
+---
+
+## REGLAS DE NEGOCIO
+
+| No. | Descripción |
+|---|---|
+| 1 | El sistema debe soportar cuatro roles diferenciados: **Cliente**, **Asesor**, **Supervisor** y **Gerente Financiero**. Cada rol tendrá acceso exclusivo a las funcionalidades autorizadas. |
+| 2 | Las contraseñas deben almacenarse cifradas en la base de datos utilizando un algoritmo seguro de hashing (ej. bcrypt). Nunca en texto plano. |
+| 3 | Tras **5 intentos fallidos consecutivos** de inicio de sesión, la cuenta del usuario se bloqueará automáticamente como medida de seguridad. |
+| 4 | El mensaje de error ante credenciales incorrectas debe ser genérico (*"Correo o contraseña incorrectos"*) y nunca debe indicar cuál de los dos campos falló, para evitar ataques de enumeración de usuarios. |
+| 5 | El token de sesión generado debe expirar tras un período de inactividad configurable (mínimo recomendado: 30 minutos). |
+| 6 | Un usuario no puede tener más de una sesión activa simultánea en la plataforma (sesión única por usuario). |
+| 7 | Solo los usuarios con estado **Activo** en el sistema pueden autenticarse. Los usuarios con estado Inactivo no pueden iniciar sesión. |
+
+---
+
+## NOTAS Y COMENTARIOS
+
+- Se recomienda implementar autenticación en dos factores (2FA) como mejora futura, especialmente para los roles de **Supervisor** y **Gerente Financiero**, dado el nivel de privilegio que poseen.
+- Considerar el uso de HTTPS obligatorio para el envío de credenciales y el intercambio de tokens de sesión.
+- El formulario de login debe ser responsivo y funcionar correctamente en dispositivos móviles.
+- Registrar en logs los intentos de inicio de sesión (exitosos y fallidos) incluyendo IP, fecha y hora, como parte de las buenas prácticas de seguridad y trazabilidad.
+- Aplicar heurística de Nielsen #5 (Prevención de errores): deshabilitar el botón "Iniciar sesión" si los campos están vacíos, para evitar envíos vacíos.
+
+---
+
+## ABREVIATURAS Y GLOSARIO
+
+| Abreviatura | Significado |
+|---|---|
+| RF | Requerimiento Funcional |
+| BD | Base de Datos |
+| MVP | Minimum Viable Product (Producto Mínimo Viable) |
+| 2FA | Autenticación en Dos Factores |
+| HTTPS | Hypertext Transfer Protocol Secure |
+| Token | Identificador único de sesión generado tras autenticación exitosa |
+| Hash | Resultado del proceso de cifrado unidireccional de una contraseña |
+| DIAN | Dirección de Impuestos y Aduanas Nacionales |
+| Rol | Perfil de usuario que define los permisos y accesos dentro del sistema |
+| Sesión | Período activo de interacción de un usuario autenticado con el sistema |
+
+---
+
+## ANEXOS
+
+| Tipo                  | Descripción                                                                                                                                                                                                                                                                                                                                                    |
+|-----------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Prototipo             | Mockup del formulario de inicio de sesión (pantallas: login → dashboard por rol).                                                                                                                                                                                                                                                                              |
+| Diagrama CU           | Diagrama de Caso de Uso: Actores `Cliente`, `Asesor`, `Supervisor`, `Gerente Financiero` - Caso de Uso `Loging`. Incluye `<<include>>` hacia `Validar credenciales` y `<<extend>>` hacia `Bloquear por intentos fallidos`, `<<include>>` hacia `Redirigir por rol`, `<<include>>` hacia `Validar campos` y `<<extend>>` hacia `Bloquear por intentos fallidos` |
+| Diagrama de secuencia | Diagrama de secuencia del flujo de autenticación: Usuario → Frontend → Backend → Base de Datos → Respuesta con token y rol.                                                                                                                                                                                                                                    |
+
+---
+
+## CONTROL DE VERSIONES
+
+| Elaborado por | Aprobado por | Fecha | Descripción y justificación de cambios |
+|---|---|---|---|
+| Squad DOSW – Grupo 2 | Docente DOSW | 20/02/2026 | Versión 1.0 – Creación inicial del análisis de requerimientos RF-02. |
 
 ## Bankify – Generación de Reporte Tributario Individual en Formato PDF
 
