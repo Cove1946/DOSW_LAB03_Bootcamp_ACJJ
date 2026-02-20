@@ -251,3 +251,130 @@
 | Elaborado por | Aprobado por | Fecha | Descripción y justificación de cambios                               |
 |---|---|---|----------------------------------------------------------------------|
 | Squad DOSW – Grupo 2 | Docente DOSW | 20/02/2026 | Versión 1.0 – Creación inicial del análisis de requerimientos RF-02. |
+
+
+
+Bankify – Consulta de Saldo de Cuenta por el Cliente Propietario
+---
+
+## INFORMACIÓN GENERAL
+### Gestión de Cuentas – Consulta de Saldo
+
+| Campo | Detalle                                                                                                                                                                                                                                                                                                                                |
+|---|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|
+| **Código** | RF-03                                                                                                                                                                                                                                                                                                                                  |
+| **Nombre** | Consulta de saldo de cuenta bancaria por parte del cliente propietario                                                                                                                                                                                                                                                                 |
+| **Tipo** | Funcional                                                                                                                                                                                                                                                                                                                              |
+| **Descripción** | El sistema debe permitir que un cliente autenticado consulte el saldo actual de sus cuentas bancarias registradas en Bankify, visualizando el saldo disponible en tiempo real. La consulta está restringida únicamente al cliente propietario de la cuenta; ningún otro usuario puede consultar el saldo de una cuenta que no le pertenezca. |
+| **Cómo se ejecutará** | El cliente inicia sesión en la plataforma Bankify, navega a la sección de "Mis cuentas" o "Consulta de saldo", selecciona la cuenta de la cual desea ver el saldo y el sistema muestra el saldo disponible actualizado al momento de la consulta.                                                                                      |
+| **Actor principal** | Cliente (propietario de la cuenta)                                                                                                                                                                                                                                                                                                     |
+| **Precondiciones** | 1. El cliente debe estar autenticado en el sistema. <br>2. El cliente debe tener al menos una cuenta bancaria registrada y activa en Bankify. <br>3. El servicio de consulta de saldos debe estar operativo.                                                                                                                           |
+
+---
+
+## DATOS DE ENTRADA
+
+| Nombre | Descripción | Tipo de campo | Reglas / Validación | Obligatorio |
+|---|---|---|---|---|
+| ID de cliente | Identificador único del cliente autenticado | Numérico | Obtenido automáticamente de la sesión activa. No editable por el usuario. | Sí |
+---
+
+## DATOS DE SALIDA
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Listado de cuentas asociadas  | Contiene todas las cuentas que el cliente haya asociado a la aplicación | List<Cuenta> | | Sí|
+|Cuenta | Contiene todos los datos asociados a la cuenta del cliente | Cuenta | | Sí|
+| Número de cuenta | Número de la cuenta consultada | Numérico | Se muestra con enmascaramiento parcial (ej. `01****7890`) por seguridad. | Sí |
+| Banco asociado | Nombre del banco correspondiente a los dos primeros dígitos de la cuenta | Texto | Derivado automáticamente del número de cuenta (ej. `01` → Bancolombia, `02` → Davivienda). | Sí |
+| Saldo disponible | Saldo actual de la cuenta al momento de la consulta | Moneda (COP) | Formato: `$ #,###,###.##`. Refleja el saldo en tiempo real. No puede ser negativo. | Sí |
+| Estado de la cuenta | Estado actual de la cuenta consultada | Texto | Valores posibles: `Activa`, `Inactiva`. Solo cuentas activas muestran saldo. | Sí |
+| Fecha y hora de consulta | Fecha y hora exacta en que se realizó la consulta | Fecha / Hora | Formato: `DD/MM/AAAA HH:MM:SS`. Se muestra en pantalla y se registra en el historial. | Sí |
+
+---
+
+## FLUJO BÁSICO
+
+| Paso | Actor | Descripción                                                                                                                 | Excepción |
+|---|---|-----------------------------------------------------------------------------------------------------------------------------|---|
+| 1 | Cliente | Inicia sesión en la plataforma Bankify con sus credenciales.                                                                | — |
+| 2 | Cliente | Navega a la sección "Mis cuentas" desde su panel principal.                                                                 | — |
+| 3 | Sistema | Muestra el listado de cuentas bancarias activas asociadas al cliente autenticado.                                           | Flujo Alterno FA-01 si el cliente no tiene cuentas registradas. |
+| 4 | Cliente | Selecciona la cuenta de la cual desea consultar el saldo.                                                                   | — |
+| 5 | Sistema | Valida que la cuenta seleccionada pertenezca al cliente autenticado.                                                        | Flujo Alterno FA-02 si la cuenta no pertenece al cliente (acceso no autorizado). |
+| 6 | Sistema | Verifica que la cuenta seleccionada esté en estado activo.                                                                  | Flujo Alterno FA-03 si la cuenta está inactiva. |
+| 7 | Sistema | Consulta el saldo actualizado de la cuenta en la base de datos.                                                             | Flujo Alterno FA-04 si el servicio de consulta no está disponible. |
+| 8 | Sistema | Muestra en pantalla el número de cuenta (enmascarado), banco asociado, saldo disponible, estado de la cuenta y fecha/hora de la consulta. | — |
+| 9 | Sistema | Registra la consulta en el historial de actividad del cliente.                                                              | — |
+
+---
+
+## FLUJO ALTERNO (MANEJO DE ERRORES)
+
+| Código | Actor | Descripción del error | Acción del sistema |
+|---|---|---|---|
+| FA-01 | Sistema | El cliente no tiene cuentas bancarias registradas en el sistema. | Muestra mensaje: *"No tienes cuentas bancarias registradas. Comunícate con tu asesor para abrir una cuenta."* |
+| FA-02 | Sistema | El cliente intenta consultar una cuenta que no le pertenece. | Muestra mensaje: *"No tienes permisos para consultar esta cuenta."* Registra el intento de acceso no autorizado en los logs de seguridad. |
+| FA-03 | Sistema | La cuenta seleccionada se encuentra inactiva. | Muestra mensaje: *"Esta cuenta se encuentra inactiva. Comunícate con tu asesor para más información."* No muestra el saldo. |
+| FA-04 | Sistema | El servicio de consulta de saldo no está disponible (error técnico). | Muestra mensaje: *"No fue posible obtener el saldo en este momento. Por favor intenta de nuevo más tarde."* |
+| FA-05 | Sistema | La sesión del cliente expiró durante la consulta. | Redirige al cliente al formulario de inicio de sesión con mensaje: *"Tu sesión ha expirado. Por favor inicia sesión nuevamente."* |
+
+---
+
+## REGLAS DE NEGOCIO
+
+| No. | Descripción |
+|---|---|
+| 1 | Solo el cliente **propietario** de una cuenta puede consultar su saldo. Ningún otro rol (asesor, supervisor, gerente financiero) tiene acceso a la consulta de saldo individual de un cliente a través de esta funcionalidad. |
+| 2 | El número de cuenta debe tener exactamente **10 dígitos**, contener solo números y no incluir caracteres especiales. |
+| 3 | Los **dos primeros dígitos** del número de cuenta identifican el banco. Solo se permite consultar cuentas cuyos primeros dos dígitos correspondan a un banco registrado en el sistema (ej. `01` → Bancolombia, `02` → Davivienda). |
+| 4 | Una cuenta solo es válida y consultable si pertenece a un **banco registrado** en el sistema. Cuentas con códigos de banco no registrados no son reconocidas. |
+| 5 | El saldo mostrado debe reflejar el estado **en tiempo real** de la cuenta al momento de la consulta, incluyendo todos los movimientos procesados hasta ese instante. |
+| 6 | El número de cuenta debe mostrarse con **enmascaramiento parcial** en pantalla (ej. `01****7890`) para proteger la información sensible del cliente. |
+| 7 | Solo las cuentas con estado **Activo** pueden ser consultadas. Las cuentas inactivas no deben exponer información de saldo. |
+| 8 | Cada consulta de saldo debe quedar registrada en el historial de actividad del cliente, incluyendo la fecha, hora y cuenta consultada, como medida de trazabilidad y seguridad. |
+
+---
+
+## NOTAS Y COMENTARIOS
+
+- Se recomienda mostrar el listado de todas las cuentas del cliente en el panel principal, con el saldo de cada una visible directamente (vista resumen), evitando que el cliente deba navegar cuenta por cuenta.
+- Para mayor seguridad, considerar solicitar confirmación de identidad (PIN o autenticación adicional) antes de mostrar el saldo completo, especialmente desde dispositivos no reconocidos.
+- El historial de consultas de saldo puede ser útil para que el cliente detecte accesos no autorizados a su información.
+- Aplicar heurística de Nielsen #1 (Visibilidad del estado del sistema): indicar claramente la fecha y hora de la última actualización del saldo mostrado.
+- Para versiones futuras, evaluar la incorporación de gráficas de evolución del saldo a lo largo del tiempo como valor agregado al cliente.
+
+---
+
+## ABREVIATURAS Y GLOSARIO
+
+| Abreviatura | Significado |
+|---|---|
+| RF | Requerimiento Funcional |
+| BD | Base de Datos |
+| COP | Peso Colombiano (moneda) |
+| MVP | Minimum Viable Product (Producto Mínimo Viable) |
+| Saldo disponible | Monto de dinero actual en la cuenta, disponible para uso o consulta por el cliente |
+| Enmascaramiento | Técnica de seguridad que oculta parcialmente datos sensibles (ej. número de cuenta) al mostrarlos en pantalla |
+| Cuenta activa | Cuenta bancaria habilitada en el sistema que puede operar y consultarse con normalidad |
+| Cuenta inactiva | Cuenta bancaria deshabilitada en el sistema, sin posibilidad de operación ni consulta de saldo |
+| Código de banco | Primeros dos dígitos del número de cuenta que identifican la entidad bancaria (ej. `01` = Bancolombia) |
+
+---
+
+## ANEXOS
+
+| Tipo | Descripción |
+|---|---|
+| Prototipo | Mockup de la pantalla de consulta de saldo (pantallas: panel cliente → mis cuentas → detalle de cuenta → saldo visible). |
+| Diagrama CU | Diagrama de Caso de Uso: Actor `Cliente` – Caso de Uso `Consultar saldo de cuenta`. Incluye `<<include>>` hacia `Validar propietario de cuenta` y `<<extend>>` hacia `Ver historial de consultas`. |
+| Diagrama de secuencia | Diagrama de secuencia del flujo: Cliente → Frontend → Backend → BD (validación de propietario y consulta de saldo) → Respuesta con saldo actualizado. |
+
+---
+
+## CONTROL DE VERSIONES
+
+| Elaborado por                  | Aprobado por | Fecha | Descripción y justificación de cambios                               |
+|--------------------------------|--------------|---|----------------------------------------------------------------------|
+| Javier Mauricio Romero Deaquiz | DOSW Equipo  | 20/02/2026 | Versión 1.0 – Creación inicial del análisis de requerimientos RF-03. |
