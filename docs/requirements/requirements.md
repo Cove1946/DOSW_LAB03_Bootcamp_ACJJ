@@ -1,9 +1,9 @@
-# DOCUMENTO DE ANÁLISIS DE REQUERIMIENTOS – RF-01
+# DOCUMENTO DE ANÁLISIS DE REQUERIMIENTOS
 ## Bankify – Autenticación de Usuarios mediante Usuario y Contraseña
 
 ---
 
-## INFORMACIÓN GENERAL
+### INFORMACIÓN GENERAL
 
 | Campo | Detalle                                                                                                                                                                                                                                                                                                                            |
 |---|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -27,7 +27,7 @@
 
 ---
 
-## DATOS DE SALIDA
+### DATOS DE SALIDA
 
 | Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
 |---|---|---|---|---|
@@ -38,7 +38,7 @@
 
 ---
 
-## FLUJO BÁSICO
+### FLUJO BÁSICO
 
 | Paso | Actor | Descripción | Excepción |
 |---|---|---|---|
@@ -55,7 +55,7 @@
 
 ---
 
-## FLUJO ALTERNO (MANEJO DE ERRORES)
+### FLUJO ALTERNO (MANEJO DE ERRORES)
 
 | Código | Actor | Descripción del error | Acción del sistema |
 |---|---|---|---|
@@ -67,7 +67,7 @@
 
 ---
 
-## REGLAS DE NEGOCIO
+### REGLAS DE NEGOCIO
 
 | No. | Descripción |
 |---|---|
@@ -81,7 +81,7 @@
 
 ---
 
-## NOTAS Y COMENTARIOS
+### NOTAS Y COMENTARIOS
 
 - Se recomienda implementar autenticación en dos factores (2FA) como mejora futura, especialmente para los roles de **Supervisor** y **Gerente Financiero**, dado el nivel de privilegio que poseen.
 - Considerar el uso de HTTPS obligatorio para el envío de credenciales y el intercambio de tokens de sesión.
@@ -91,7 +91,7 @@
 
 ---
 
-## ABREVIATURAS Y GLOSARIO
+### ABREVIATURAS Y GLOSARIO
 
 | Abreviatura | Significado |
 |---|---|
@@ -108,7 +108,7 @@
 
 ---
 
-## ANEXOS
+### ANEXOS
 
 | Tipo                  | Descripción                                                                                                                                                                                                                                                                                                                                                    |
 |-----------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -118,7 +118,7 @@
 
 ---
 
-## CONTROL DE VERSIONES
+### CONTROL DE VERSIONES
 
 | Elaborado por | Aprobado por | Fecha | Descripción y justificación de cambios |
 |---|---|---|---|
@@ -128,7 +128,7 @@
 
 ---
 
-## INFORMACIÓN GENERAL
+### INFORMACIÓN GENERAL
 
 ### Funcionalidad
 
@@ -253,11 +253,10 @@
 | Squad DOSW – Grupo 2 | Docente DOSW | 20/02/2026 | Versión 1.0 – Creación inicial del análisis de requerimientos RF-02. |
 
 
-
 Bankify – Consulta de Saldo de Cuenta por el Cliente Propietario
 ---
 
-## INFORMACIÓN GENERAL
+### INFORMACIÓN GENERAL
 ### Gestión de Cuentas – Consulta de Saldo
 
 | Campo | Detalle                                                                                                                                                                                                                                                                                                                                |
@@ -273,14 +272,14 @@ Bankify – Consulta de Saldo de Cuenta por el Cliente Propietario
 
 ---
 
-## DATOS DE ENTRADA
+### DATOS DE ENTRADA
 
 | Nombre | Descripción | Tipo de campo | Reglas / Validación | Obligatorio |
 |---|---|---|---|---|
 | ID de cliente | Identificador único del cliente autenticado | Numérico | Obtenido automáticamente de la sesión activa. No editable por el usuario. | Sí |
 ---
 
-## DATOS DE SALIDA
+### DATOS DE SALIDA
 
 | Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
 |---|---|---|---|---|
@@ -294,7 +293,7 @@ Bankify – Consulta de Saldo de Cuenta por el Cliente Propietario
 
 ---
 
-## FLUJO BÁSICO
+### FLUJO BÁSICO
 
 | Paso | Actor | Descripción                                                                                                                 | Excepción |
 |---|---|-----------------------------------------------------------------------------------------------------------------------------|---|
@@ -310,7 +309,7 @@ Bankify – Consulta de Saldo de Cuenta por el Cliente Propietario
 
 ---
 
-## FLUJO ALTERNO (MANEJO DE ERRORES)
+### FLUJO ALTERNO (MANEJO DE ERRORES)
 
 | Código | Actor | Descripción del error | Acción del sistema |
 |---|---|---|---|
@@ -322,7 +321,7 @@ Bankify – Consulta de Saldo de Cuenta por el Cliente Propietario
 
 ---
 
-## REGLAS DE NEGOCIO
+### REGLAS DE NEGOCIO
 
 | No. | Descripción |
 |---|---|
@@ -337,7 +336,7 @@ Bankify – Consulta de Saldo de Cuenta por el Cliente Propietario
 
 ---
 
-## NOTAS Y COMENTARIOS
+### NOTAS Y COMENTARIOS
 
 - Se recomienda mostrar el listado de todas las cuentas del cliente en el panel principal, con el saldo de cada una visible directamente (vista resumen), evitando que el cliente deba navegar cuenta por cuenta.
 - Para mayor seguridad, considerar solicitar confirmación de identidad (PIN o autenticación adicional) antes de mostrar el saldo completo, especialmente desde dispositivos no reconocidos.
@@ -347,7 +346,7 @@ Bankify – Consulta de Saldo de Cuenta por el Cliente Propietario
 
 ---
 
-## ABREVIATURAS Y GLOSARIO
+### ABREVIATURAS Y GLOSARIO
 
 | Abreviatura | Significado |
 |---|---|
@@ -363,7 +362,7 @@ Bankify – Consulta de Saldo de Cuenta por el Cliente Propietario
 
 ---
 
-## ANEXOS
+### ANEXOS
 
 | Tipo | Descripción |
 |---|---|
@@ -373,7 +372,7 @@ Bankify – Consulta de Saldo de Cuenta por el Cliente Propietario
 
 ---
 
-## CONTROL DE VERSIONES
+### CONTROL DE VERSIONES
 
 | Elaborado por                  | Aprobado por | Fecha | Descripción y justificación de cambios                               |
 |--------------------------------|--------------|---|----------------------------------------------------------------------|
