@@ -18,7 +18,7 @@
 
 ---
 
-## DATOS DE ENTRADA
+### DATOS DE ENTRADA
 
 | Nombre | Descripción | Tipo de campo | Reglas / Validación | Obligatorio |
 |---|---|---|---|---|
