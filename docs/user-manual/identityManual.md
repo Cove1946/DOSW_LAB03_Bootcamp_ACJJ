@@ -123,7 +123,7 @@ Para este caso utilizamos las imágenes siguientes:
 
 ![CAPTURA](../images/usuario.png)
 
-# 4. Imágenes de diseño:
+# 5. Imágenes de diseño:
 
 ![Bankify Logo](../images/Icono_Bankify.jpeg)
 
