@@ -253,6 +253,14 @@
 | Squad DOSW – Grupo 2 | Docente DOSW | 20/02/2026 | Versión 1.0 – Creación inicial del análisis de requerimientos RF-02. |
 
 
+### Link Mockup (Funcional)
+Se uso la IA de figma para hacer el mockup funcional, mandandole las diferentes imagenes de pantallas que ya teniamos definidas
+
+https://www.figma.com/make/VDtfvGZjICtFvKbnOLKYqS/Create-Image?p=f&fullscreen=1
+
+
+
+
 Bankify – Consulta de Saldo de Cuenta por el Cliente Propietario
 ---
 
