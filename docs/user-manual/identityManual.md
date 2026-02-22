@@ -122,3 +122,9 @@ Para este caso utilizamos las imágenes siguientes:
 ![CAPTURA](../images/reloj.png)
 
 ![CAPTURA](../images/usuario.png)
+
+# 4. Imágenes de diseño:
+
+![Bankify Logo](../images/Icono_Bankify.jpeg)
+
+![Bankify Icon](../images/Logo_Bankify.jpeg)
