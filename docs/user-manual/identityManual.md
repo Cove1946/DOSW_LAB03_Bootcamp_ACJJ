@@ -7,13 +7,13 @@
 
 # 1. Ícono
 
-![Bankify Logo](../images/Icono_Bankify.jpeg)
+![Bankify Logo](../images/recursos/Icono_Bankify.jpeg)
 
 ---
 
 # 1.1 Logo
 
-![Bankify Icon](../images/Logo_Bankify.jpeg)
+![Bankify Icon](../images/recursos/Logo_Bankify.jpeg)
 
 ---
 
@@ -95,36 +95,36 @@ Para este caso utilizamos las imágenes siguientes:
 
 ---
 
-![CAPTURA](../images/ayuda.png)
+![CAPTURA](../images/recursos/ayuda.png)
 
-![CAPTURA](../images/calendario.png)
+![CAPTURA](../images/recursos/calendario.png)
 
-![CAPTURA](../images/campanita.png)
+![CAPTURA](../images/recursos/campanita.png)
 
-![CAPTURA](../images/cartera.png)
+![CAPTURA](../images/recursos/cartera.png)
 
-![CAPTURA](../images/casita.png)
+![CAPTURA](../images/recursos/casita.png)
 
-![CAPTURA](../images/chulito.png)
+![CAPTURA](../images/recursos/chulito.png)
 
-![CAPTURA](../images/configuracion.png)
+![CAPTURA](../images/recursos/configuracion.png)
 
-![CAPTURA](../images/documento.png)
+![CAPTURA](../images/recursos/documento.png)
 
-![CAPTURA](../images/documento2.png)
+![CAPTURA](../images/recursos/documento2.png)
 
-![CAPTURA](../images/estadistica.png)
+![CAPTURA](../images/recursos/estadistica.png)
 
-![CAPTURA](../images/informacion.png)
+![CAPTURA](../images/recursos/informacion.png)
 
-![CAPTURA](../images/matriz.png)
+![CAPTURA](../images/recursos/matriz.png)
 
-![CAPTURA](../images/reloj.png)
+![CAPTURA](../images/recursos/reloj.png)
 
-![CAPTURA](../images/usuario.png)
+![CAPTURA](../images/recursos/usuario.png)
 
 # 5. Imágenes de diseño:
 
-![Bankify Logo](../images/Icono_Bankify.jpeg)
+![Bankify Logo](../images/recursos/Icono_Bankify.jpeg)
 
-![Bankify Icon](../images/Logo_Bankify.jpeg)
+![Bankify Icon](../images/recursos/Logo_Bankify.jpeg)
